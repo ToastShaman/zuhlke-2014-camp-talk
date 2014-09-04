@@ -1,0 +1,14 @@
+{
+  "name": "zuhlke-2014-camp-talk",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "bunyan": "^1.0.1",
+    "commander": "^2.3.0",
+    "helmet": "^0.4.1",
+    "restify": "^2.8.2"
+  }
+}
