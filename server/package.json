@@ -9,6 +9,14 @@
     "bunyan": "^1.0.1",
     "commander": "^2.3.0",
     "helmet": "^0.4.1",
-    "restify": "^2.8.2"
+    "mongodb": "^1.4.10",
+    "restify": "^2.8.2",
+    "when": "^3.4.5"
+  },
+  "devDependencies": {
+    "gulp": "^3.8.7",
+    "gulp-mocha": "^1.0.0",
+    "mocha": "^1.21.4",
+    "should": "^4.0.4"
   }
 }

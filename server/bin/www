@@ -10,11 +10,12 @@ if (!program.config) {
     program.help();
 }
 
+var configuration = require('./' + program.config);
 var cluster = require('cluster');
 var http = require('http');
 var numCPUs = require('os').cpus().length;
 
-if (cluster.isMaster) {
+if (configuration.cluster && cluster.isMaster) {
     console.log('Starting workers: ' + numCPUs);
     for (var i = 0; i < numCPUs; i++) {
         cluster.fork();
@@ -28,6 +29,5 @@ if (cluster.isMaster) {
         console.log('Worker ' + newPID + ' born.');
     });
 } else {
-    var configuration = require('./' + program.config);
     require('../server').start(configuration);
 }

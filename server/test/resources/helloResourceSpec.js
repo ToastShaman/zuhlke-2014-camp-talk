@@ -1,4 +1,3 @@
-var should = require('should');
 var restify = require('restify');
 var server = require('../../server');
 
@@ -7,10 +6,17 @@ var client = restify.createJsonClient({
     version: '*'
 });
 
+var configuration = {
+    port: 8081,
+    database: {
+        url : 'mongodb://localhost:27017/test'
+    }
+};
+
 describe('helloResource', function() {
 
-    beforeEach(function(done){
-        server.start({port : 8081});
+    beforeEach(function(done) {
+        server.start(configuration);
         done();
     });
 
