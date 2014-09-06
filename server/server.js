@@ -34,7 +34,7 @@ module.exports.start = function(configuration) {
     
     require('./resources/helloResource')(server);
     
-    server.on('after', restify.auditLogger({log: log}));
+    //server.on('after', restify.auditLogger({log: log}));
 
     server.listen(configuration.port || 8080);
   });

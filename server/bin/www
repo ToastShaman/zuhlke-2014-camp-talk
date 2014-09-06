@@ -2,12 +2,12 @@
 
 var program = require('commander');
 program
-    .version('0.0.1')
-    .option('-c, --config [file]', 'The configuration file to use')
-    .parse(process.argv);
+  .version('0.0.1')
+  .option('-c, --config [file]', 'The configuration file to use')
+  .parse(process.argv);
 
 if (!program.config) {
-    program.help();
+  program.help();
 }
 
 var configuration = require('./' + program.config);
@@ -16,18 +16,18 @@ var http = require('http');
 var numCPUs = require('os').cpus().length;
 
 if (configuration.cluster && cluster.isMaster) {
-    console.log('Starting workers: ' + numCPUs);
-    for (var i = 0; i < numCPUs; i++) {
-        cluster.fork();
-    }
+  console.log('Starting workers: ' + numCPUs);
+  for (var i = 0; i < numCPUs; i++) {
+    cluster.fork();
+  }
 
-    cluster.on('exit', function(deadWorker, code, signal) {
-        var worker = cluster.fork();
-        var newPID = worker.process.pid;
-        var oldPID = deadWorker.process.pid;
-        console.log('Worker ' + oldPID + ' died.');
-        console.log('Worker ' + newPID + ' born.');
-    });
+  cluster.on('exit', function(deadWorker, code, signal) {
+    var worker = cluster.fork();
+    var newPID = worker.process.pid;
+    var oldPID = deadWorker.process.pid;
+    console.log('Worker ' + oldPID + ' died.');
+    console.log('Worker ' + newPID + ' born.');
+  });
 } else {
-    require('../server').start(configuration);
+  require('../server').start(configuration);
 }

@@ -13,14 +13,14 @@ var configuration = {
   }
 };
 
-describe('helloResource', function() {
+describe('The hello rest api', function() {
 
   before(function(done) {
     server.start(configuration);
     done();
   });
 
-  it('should return hello world', function(done) {
+  it('/hello should return hello world', function(done) {
     client.get('/hello', function(err, req, res, data) {
       if (err) return done(err);
       data.should.have.property('hello', 'world');

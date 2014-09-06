@@ -10,6 +10,7 @@
     "commander": "^2.3.0",
     "helmet": "^0.4.1",
     "mongodb": "^1.4.10",
+    "node-uuid": "^1.4.1",
     "restify": "^2.8.2",
     "when": "^3.4.5"
   },
