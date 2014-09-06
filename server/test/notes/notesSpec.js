@@ -15,7 +15,7 @@ describe('notes', function() {
 
   it('should return the number of notes for a given user', function(done) {
     notes.count().then(function(count) {
-      count.should.have.length(0);
+      count.should.eql(0);
       done();
     });
   });
