@@ -1,7 +1,7 @@
 {
-	"cluster": false,
-    "port": 8080,
-    "database" : {
-    	"url" : "mongodb://localhost:27017/test"
-    }
+  "cluster": false,
+  "port": 8080,
+  "database" : {
+    "url" : "mongodb://localhost:27017/test"
+  }
 }

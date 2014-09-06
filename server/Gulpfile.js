@@ -2,5 +2,5 @@ var gulp = require('gulp');
 var mocha = require('gulp-mocha');
 
 gulp.task('default', function () {
-	return gulp.src('test/**/*Spec.js', {read: false}).pipe(mocha({reporter: 'spec', globals: {should: require('should')}}));
+  return gulp.src('test/**/*Spec.js', {read: false}).pipe(mocha({reporter: 'spec', globals: {should: require('should')}}));
 });
