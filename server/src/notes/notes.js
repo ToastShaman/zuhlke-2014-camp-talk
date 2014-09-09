@@ -7,6 +7,7 @@ module.exports = function(db) {
   assert.equal(typeof (db), 'object', "argument 'db' must be a mongodb connection");
 
   return {
+    
     insert: function(note) {
       assert.equal(typeof (note), 'object', "argument 'note' must be a object");
       assert.ok(note.title, "a 'note' needs to have a title: " + JSON.stringify(note));

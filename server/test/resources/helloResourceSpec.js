@@ -1,17 +1,11 @@
 var restify = require('restify');
-var server = require('../../server');
+var server = require('../../src/server');
+var configuration = require('../test-configuration.js')();
 
 var client = restify.createJsonClient({
-  url: 'http://localhost:8081',
+  url: 'http://localhost:' + configuration.port,
   version: '*'
 });
-
-var configuration = {
-  port: 8081,
-  database: {
-    url : 'mongodb://localhost:27017/test'
-  }
-};
 
 describe('The hello rest api', function() {
 

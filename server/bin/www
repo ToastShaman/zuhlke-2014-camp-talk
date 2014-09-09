@@ -10,24 +10,57 @@ if (!program.config) {
   program.help();
 }
 
-var configuration = require('./' + program.config);
+var configuration = require('./' + program.config)();
+var bunyan = require('bunyan');
 var cluster = require('cluster');
 var http = require('http');
-var numCPUs = require('os').cpus().length;
+var log = configuration.logger;
+var numberOfCPUs = require('os').cpus().length;
+
+function forkWorker(numberOfWorkers) {
+  for (var i = 0; i < numberOfWorkers; i++) {
+    var worker = cluster.fork();
+    log.info('Worker %s (#%s) has started', worker.process.pid, worker.id);
+  }
+}
+
+function stopAllWorkers(callback) {
+  log.warn('Stopping all workers...');
+  for (var i in cluster.workers) {
+    cluster.workers[i].send('stopProcess');
+    cluster.workers[i].disconnect();
+  }
+  if (callback && typeof(callback) === 'function') callback();
+}
 
 if (configuration.cluster && cluster.isMaster) {
-  console.log('Starting workers: ' + numCPUs);
-  for (var i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
+
+  forkWorker(numberOfCPUs);
 
   cluster.on('exit', function(deadWorker, code, signal) {
-    var worker = cluster.fork();
-    var newPID = worker.process.pid;
-    var oldPID = deadWorker.process.pid;
-    console.log('Worker ' + oldPID + ' died.');
-    console.log('Worker ' + newPID + ' born.');
+    if (code !== 0) {
+      log.info('Worker %s (#%s) has exited', deadWorker.process.pid, deadWorker.id);
+      forkWorker(1);
+    }
+  });
+
+  cluster.on('disconnect', function(worker) {
+    log.info('Worker %s (#%s) has disconnected', worker.process.pid, worker.id);
+  });
+
+  process.on('SIGHUP', function() {
+    log.info('Received SIGHUP signal... Shutting down');
+    stopAllWorkers();
+  });
+
+  process.on('SIGUSR2', function() {
+    log.info('Received SIGUSR2 signal... Restarting with a new version');
+    // delete the cached module, so we can reload the app
+    delete require.cache[require.resolve('../src/server')];
+    stopAllWorkers(function() {
+      forkWorker(numberOfCPUs);
+    });
   });
 } else {
-  require('../server').start(configuration);
+  require('../src/server').start(configuration);
 }

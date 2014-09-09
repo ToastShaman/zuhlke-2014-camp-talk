@@ -1,5 +1,6 @@
 var when = require('when');
 var MongoClient = require('mongodb').MongoClient;
+var configuration = require('../test-configuration.js')();
 
 describe('notes', function() {
 
@@ -7,9 +8,9 @@ describe('notes', function() {
   var db;
   
   before(function(done) {
-    MongoClient.connect('mongodb://localhost:27017/test', function(err, database) {
+    MongoClient.connect(configuration.database.url, function(err, database) {
       if (err) done(err);
-      notes = require('../../notes/notes')(database);
+      notes = require('../../src/notes/notes')(database);
       db = database;
       done();
     });
