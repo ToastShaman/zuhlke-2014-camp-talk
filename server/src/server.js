@@ -60,7 +60,7 @@ module.exports.start = function(configuration) {
     });
 
     server.listen(configuration.port || 8080, function() {
-      console.log('%s listening at %s', server.name, server.url);
+      log.info('%s listening at %s', server.name, server.url);
     });
   });
 };

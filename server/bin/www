@@ -24,13 +24,12 @@ function forkWorker(numberOfWorkers) {
   }
 }
 
-function stopAllWorkers(callback) {
+function stopAllWorkers() {
   log.warn('Stopping all workers...');
   for (var i in cluster.workers) {
     cluster.workers[i].send('stopProcess');
     cluster.workers[i].disconnect();
   }
-  if (callback && typeof(callback) === 'function') callback();
 }
 
 if (configuration.cluster && cluster.isMaster) {
