@@ -37,9 +37,9 @@ if (configuration.cluster && cluster.isMaster) {
 
   forkWorker(numberOfCPUs);
 
-  cluster.on('exit', function(deadWorker, code, signal) {
+  cluster.on('exit', function(worker, code, signal) {
     if (code !== 0) {
-      log.info('Worker %s (#%s) has exited', deadWorker.process.pid, deadWorker.id);
+      log.info('Worker %s (#%s) has exited', worker.process.pid, worker.id);
       forkWorker(1);
     }
   });
@@ -57,9 +57,8 @@ if (configuration.cluster && cluster.isMaster) {
     log.info('Received SIGUSR2 signal... Restarting with a new version');
     // delete the cached module, so we can reload the app
     delete require.cache[require.resolve('../src/server')];
-    stopAllWorkers(function() {
-      forkWorker(numberOfCPUs);
-    });
+    stopAllWorkers();
+    forkWorker(numberOfCPUs);
   });
 } else {
   require('../src/server').start(configuration);
