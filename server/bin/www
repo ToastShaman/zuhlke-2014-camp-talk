@@ -17,9 +17,14 @@ var http = require('http');
 var log = configuration.logger;
 var numberOfCPUs = require('os').cpus().length;
 
+if (numberOfCPUs < 2) {
+  numberOfCPUs = 2;
+}
+
 function forkWorker(numberOfWorkers) {
   for (var i = 0; i < numberOfWorkers; i++) {
     var worker = cluster.fork();
+    worker.process.title = 'worker';
     log.info('Worker %s (#%s) has started', worker.process.pid, worker.id);
   }
 }
@@ -34,6 +39,10 @@ function stopAllWorkers() {
 
 if (configuration.cluster && cluster.isMaster) {
 
+  log.info('Master %s (#%s) has started', master.process.pid, master.id);
+
+  process.title = 'master';
+
   forkWorker(numberOfCPUs);
 
   cluster.on('exit', function(worker, code, signal) {
@@ -45,6 +54,11 @@ if (configuration.cluster && cluster.isMaster) {
 
   cluster.on('disconnect', function(worker) {
     log.info('Worker %s (#%s) has disconnected', worker.process.pid, worker.id);
+  });
+
+  process.on('SIGINT', function() {
+    log.info('Received SIGINT signal... Shutting down');
+    stopAllWorkers();
   });
 
   process.on('SIGHUP', function() {
