@@ -1,9 +1,6 @@
 ---
 - name: Provision node servers
   hosts: node-servers
-  user: root
-  # remote_user: user
-  # sudo: yes
 
   roles:
     - common
@@ -11,9 +8,6 @@
 
 - name: Provision database servers
   hosts: db-servers
-  user: root
-  # remote_user: user
-  # sudo: yes
 
   roles:
     - common
@@ -21,9 +15,6 @@
 
 - name: Provision load balancer
   hosts: web-servers
-  user: root
-  # remote_user: user
-  # sudo: yes
 
   roles:
     - common

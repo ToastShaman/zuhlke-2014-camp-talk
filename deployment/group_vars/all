@@ -1,0 +1,18 @@
+# The directory prefix where the database files would be stored
+mongodb_datadir_prefix: /data/
+
+# The password for admin user
+mongo_admin_pass: admin
+
+# The port the mongodb instance will be listening on for connections
+mongodb_port: 27017
+
+# The port the node instances will be listening on for HTTP connections
+node_http_port: 8080
+
+# The port the nginx load balancer will be listening on for HTTP(S) connections
+nginx_http_port: 80
+nginx_https_port: 443
+
+# The password of the Zuhlke user
+zuhlke_passwd: zuhlke
