@@ -5,7 +5,16 @@
 - name: Install fail2ban
   yum: name=fail2ban state=present
 
-- name: Install yum-cron for automatic system updates
+- name: Install NTP
+  yum: name=ntp state=present
+
+- name: Install pwgen
+  yum: name=pwgen state=present
+
+- name: Install vim
+  yum: name=vim state=present
+
+- name: Install yum-cron for automatic security updates
   yum: name=yum-cron state=present
   notify: restart yum-cron
 
@@ -13,28 +22,28 @@
   copy: src=epel.repo dest=/etc/yum.repos.d/epel.repo
 
 - name: Create the GPG key for EPEL
-  copy: src=RPM-GPG-KEY-EPEL-6 dest=/etc/pki/rpm-gpg
+  copy: src=RPM-GPG-KEY-EPEL-7 dest=/etc/pki/rpm-gpg
 
 - name: Install the 'Development tools' package group
   yum: name="@Development tools" state=present
 
 - name: Set up iptables rules
-  template: src=iptables-save dest=/etc/sysconfig/iptables
+  template: src=iptables-save.j2 dest=/etc/sysconfig/iptables
   notify: restart iptables
 
-- name: Add zuhlke user
-  action: user name=zuhlke password={{ zuhlke_passwd }}
+- name: Add deploy user
+  action: user name=deploy password={{ deploy_passwd }}
 
-#- name: Add authorized deploy key for zuhlke
-#  action: authorized_key user=zuhlke key="{{ item }}"
-#  with_file:
-#    - keys/insecure_id_rsa.pub
+- name: Add authorized deploy key for deploy user
+  action: authorized_key user=deploy key="{{ item }}"
+  with_file:
+    - public_keys/insecure_id_rsa.pub
 
 - name: Remove sudo group rights
   action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
 
-- name: Add zuhlke user to sudoers
-  action: lineinfile dest=/etc/sudoers regexp="zuhlke ALL" line="zuhlke ALL=(ALL) ALL" state=present
+- name: Add deploy user to sudoers
+  action: lineinfile dest=/etc/sudoers regexp="deploy ALL" line="deploy ALL=(ALL) ALL" state=present
 
 - name: Disallow root SSH access
   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present

@@ -1,0 +1,9 @@
+---
+- name: Provision database servers
+  hosts: db-servers
+  remote_user: zuhlke
+  sudo: true
+
+  roles:
+    - common
+    - mongod

@@ -1,0 +1,9 @@
+---
+- name: Provision node servers
+  hosts: node-servers
+  remote_user: zuhlke
+  sudo: true
+
+  roles:
+    - common
+    - node

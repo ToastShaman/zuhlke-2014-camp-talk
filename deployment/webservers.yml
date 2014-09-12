@@ -1,0 +1,9 @@
+---
+- name: Provision load balancer
+  hosts: web-servers
+  remote_user: zuhlke
+  sudo: true
+
+  roles:
+    - common
+    - nginx
