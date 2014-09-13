@@ -11,20 +11,18 @@
 - name: Install Networking tools
   yum: name=net-tools state=present
 
-- name: Install fail2ban
-  yum: name=fail2ban state=present
-
 - name: Install NTP
   yum: name=ntp state=present
-
-- name: Install pwgen
-  yum: name=pwgen state=present
 
 - name: Install vim
   yum: name=vim state=present
 
 - name: Install yum-cron for automatic security updates
   yum: name=yum-cron state=present
+  notify: restart yum-cron
+
+- name: Copy yum-cron configuration for automatic security updates
+  copy: src=yum-cron.conf dest=/etc/yum/yum-cron.conf
   notify: restart yum-cron
 
 - name: Copy the EPEL repository definition
@@ -36,6 +34,9 @@
 - name: Install the 'Development tools' package group
   yum: name="@Development tools" state=present
 
+- name: Install Java
+  yum: name=java-1.7.0-openjdk.x86_64 state=present
+
 - name: Set up iptables rules
   template: src=iptables-save.j2 dest=/etc/sysconfig/iptables
   notify: restart iptables
@@ -46,7 +47,7 @@
 - name: Add authorized deploy key for deploy user
   action: authorized_key user=deploy key="{{ item }}"
   with_file:
-    - public_keys/ked
+    - public_keys/ked.pub
 
 - name: Remove sudo group rights
   action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent

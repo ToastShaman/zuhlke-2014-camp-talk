@@ -1,0 +1,3 @@
+---
+- name: Install NodeJs
+  yum: name=nodejs.x86_64 state=latest
