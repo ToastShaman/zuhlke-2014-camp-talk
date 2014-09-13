@@ -34,9 +34,6 @@
 - name: Install the 'Development tools' package group
   yum: name="@Development tools" state=present
 
-- name: Install Java
-  yum: name=java-1.7.0-openjdk.x86_64 state=present
-
 - name: Set up iptables rules
   template: src=iptables-save.j2 dest=/etc/sysconfig/iptables
   notify: restart iptables

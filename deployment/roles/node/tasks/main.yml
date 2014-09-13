@@ -1,3 +1,27 @@
 ---
 - name: Install NodeJs
   yum: name=nodejs.x86_64 state=latest
+
+- name: Install node package manager (NPM)
+  yum: name=npm.noarch state=latest
+
+- name: Install Gulp
+  npm: name=gulp global=yes
+
+- name: Install Bower
+  npm: name=bower global=yes
+
+- name: Install Grunt
+  npm: name=grunt global=yes
+
+- name: Install Grunt (CLI)
+  npm: name=grunt-cli global=yes
+
+- name: Install bunyan
+  npm: name=bunyan global=yes
+
+- name: Install dtrace
+  yum: name=systemtap-sdt-devel.x86_64 state=latest
+
+- name: Install bunyan dtrace provider
+  npm: name=dtrace-provider global=yes

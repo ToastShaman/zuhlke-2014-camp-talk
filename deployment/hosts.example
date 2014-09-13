@@ -1,6 +1,8 @@
 [web-servers]
+192.168.0.18
 
 [db-servers]
+192.168.0.18
 
 [node-servers]
 192.168.0.18

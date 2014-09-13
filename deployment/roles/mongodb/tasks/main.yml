@@ -1,0 +1,10 @@
+---
+- name: Copy the mongodb repository definition
+  copy: src=mongodb.repo dest=/etc/yum.repos.d/mongodb.repo
+
+- name: Install MongoDb
+  yum: name=mongodb-org state=latest
+
+- name: Allow connections on all interfaces
+  action: lineinfile dest=/etc/mongod.conf regexp="^bind_ip=127.0.0.1" line="#bind_ip=127.0.0.1" state=present
+  notify: restart mongodb
