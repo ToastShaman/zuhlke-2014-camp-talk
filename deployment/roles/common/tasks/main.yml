@@ -2,6 +2,15 @@
 - name: Upgrade all packages
   yum: name=* state=latest
 
+- name: Install wget
+  yum: name=wget state=present
+
+- name: Install curl
+  yum: name=curl state=present
+
+- name: Install Networking tools
+  yum: name=net-tools state=present
+
 - name: Install fail2ban
   yum: name=fail2ban state=present
 
@@ -37,7 +46,7 @@
 - name: Add authorized deploy key for deploy user
   action: authorized_key user=deploy key="{{ item }}"
   with_file:
-    - public_keys/insecure_id_rsa.pub
+    - public_keys/ked
 
 - name: Remove sudo group rights
   action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
