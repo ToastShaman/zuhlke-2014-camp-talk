@@ -1,0 +1,30 @@
+--
+- hosts: node-servers
+  gather_facts: false
+  sudo: true
+  sudo_user: deploy
+  serial: 1
+
+  vars:
+    git_repo: "https://github.com/ToastShaman/zuhlke-2014-camp-talk.git"
+
+  vars_prompt:
+    - name: "git_branch"
+      prompt: "What branch should be deployed? (master)"
+      default: "master"
+
+  tasks:
+  - name: Pull sources from the repository (master branch)
+    git: repo={{ git_repo }} dest=/var/projects/ branch={{ git_branch }}
+    notify: restart backend
+
+  - name: Restart the node worker threads
+    script: /var/projects/server/bin/stopAndRestart.sh
+
+- hosts: web-servers
+  remote_user: zuhlke
+  sudo: true
+  serial: 1
+
+  - name: Restart nginx
+    service: name=nginx state=restarted

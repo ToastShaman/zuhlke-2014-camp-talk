@@ -42,7 +42,7 @@ if (configuration.cluster && cluster.isMaster) {
 
   log.info('Master %s (#%s) has started', process.pid, process.id);
 
-  var pid = npid.create('master.pid');
+  var pid = npid.create('backend.pid');
   pid.removeOnExit();
 
   process.title = 'master';
