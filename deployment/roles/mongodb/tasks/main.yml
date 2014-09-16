@@ -5,6 +5,10 @@
 - name: Install MongoDb
   yum: name=mongodb-org state=latest
 
-- name: Allow connections on all interfaces
-  action: lineinfile dest=/etc/mongod.conf regexp="^bind_ip=127.0.0.1" line="#bind_ip=127.0.0.1" state=present
+- name: Configure mongodb 
+  copy: src=mongod.conf dest=/etc/mongod.conf
   notify: restart mongodb
+
+- name: Allow incoming mongodb connections
+  firewalld: port=27017/tcp permanent=true state=enabled
+  notify: restart firewalld

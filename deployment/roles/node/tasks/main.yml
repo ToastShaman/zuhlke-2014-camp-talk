@@ -1,4 +1,8 @@
 ---
+- name: Allow incoming connections on port 8080
+  firewalld: port=8080/tcp permanent=true state=enabled
+  notify: restart firewalld
+
 - name: Install NodeJs
   yum: name=nodejs.x86_64 state=latest
 

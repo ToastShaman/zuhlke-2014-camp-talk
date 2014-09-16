@@ -1,0 +1,44 @@
+user nginx;
+
+pid /run/nginx.pid;
+
+events {
+  worker_connections 4096;  ## Default: 1024
+}
+
+error_log /var/log/nginx/error.log;
+
+http {
+  include /etc/nginx/mime.types;
+
+  access_log /var/log/nginx/access.log;
+
+  upstream backend {
+  {% for host in groups['node-servers'] %}
+  server {{ hostvars[host]['ansible_default_ipv4']['address'] }}:{{ node_http_port }};
+  {% endfor %}
+  }
+
+  gzip  on;
+
+  index index.html;
+
+  server {
+    listen {{ nginx_http_port }};
+    listen {{ nginx_https_port }} ssl spdy;
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+    ssl_protocols SSLv2 SSLv3 TLSv1;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    
+    location / {
+      root /usr/share/nginx/html;
+    }
+
+    location /api {
+      proxy_pass http://backend;
+    }
+
+  }
+}

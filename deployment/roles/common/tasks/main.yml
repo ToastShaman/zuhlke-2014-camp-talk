@@ -17,6 +17,9 @@
 - name: Install vim
   yum: name=vim state=present
 
+- name: Install nano
+  yum: name=nano state=present
+
 - name: Install yum-cron for automatic security updates
   yum: name=yum-cron state=present
   notify: restart yum-cron
@@ -33,10 +36,6 @@
 
 - name: Install the 'Development tools' package group
   yum: name="@Development tools" state=present
-
-- name: Set up iptables rules
-  template: src=iptables-save.j2 dest=/etc/sysconfig/iptables
-  notify: restart iptables
 
 - name: Add deploy user
   action: user name=deploy password={{ deploy_passwd }}
