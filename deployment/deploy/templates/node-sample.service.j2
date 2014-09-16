@@ -1,0 +1,14 @@
+[Service]
+WorkingDirectory={{project_src}}/server/bin/
+ExecStart=www
+ExecReload=/bin/kill -HUP $MAINPID
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=node-sample
+User=deploy
+Group=deploy
+Environment='NODE_ENV=production'
+ 
+[Install]
+WantedBy=multi-user.target

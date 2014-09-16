@@ -6,12 +6,11 @@ events {
   worker_connections 4096;  ## Default: 1024
 }
 
-error_log /var/log/nginx/error.log;
-
 http {
   include /etc/nginx/mime.types;
 
   access_log /var/log/nginx/access.log;
+  error_log /var/log/nginx/error.log;
 
   upstream backend {
   {% for host in groups['node-servers'] %}
@@ -19,18 +18,19 @@ http {
   {% endfor %}
   }
 
-  gzip  on;
+  server_tokens off;
+  more_clear_headers 'Server';  
+  more_clear_headers 'X-Powered-By';
 
-  index index.html;
+  gzip on;
+  gzip_proxied any;
+
+  sendfile on;
+
+  keepalive_timeout 65;
 
   server {
     listen 80;
-    listen 443 ssl spdy;
-    ssl_certificate /etc/nginx/ssl/nginx.crt;
-    ssl_certificate_key /etc/nginx/ssl/nginx.key;
-    ssl_protocols SSLv2 SSLv3 TLSv1;
-    ssl_ciphers HIGH:!aNULL:!MD5;
-    ssl_prefer_server_ciphers on;
     
     location / {
       root /usr/share/nginx/html;
@@ -39,6 +39,24 @@ http {
     location /api {
       proxy_pass http://backend;
     }
-
   }
+
+  server {
+    listen 443 ssl spdy;
+    ssl_certificate /etc/nginx/ssl/nginx.crt;
+    ssl_certificate_key /etc/nginx/ssl/nginx.key;
+    ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS";
+    
+    location / {
+      root /usr/share/nginx/html;
+    }
+
+    location /api {
+      proxy_pass http://backend;
+    }
+  }
+
+  include /etc/nginx/conf.d/*.conf;
 }

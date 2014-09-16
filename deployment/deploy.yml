@@ -1,24 +1,36 @@
 --
 - hosts: node-servers
   gather_facts: false
-  remote_user: deploy
+  remote_user: zuhlke
+  sudo: true
+  sudo_user: deploy
   serial: 1
 
   vars:
     git_repo: "https://github.com/ToastShaman/zuhlke-2014-camp-talk.git"
+    project_src: "/home/deploy"
 
   vars_prompt:
     - name: "git_branch"
-      prompt: "What branch should be deployed? (master)"
+      prompt: "What branch should be deployed? (default=master)"
       default: "master"
 
   tasks:
   - name: Pull sources from the repository
-    git: repo={{ git_repo }} dest=/var/projects/ branch={{ git_branch }}
+    git: repo={{ git_repo }} dest={{ project_src }} branch={{ git_branch }}
     notify: restart backend
 
-  - name: Restart the node worker threads
-    script: /var/projects/server/bin/stopAndRestart.sh
+  - name: NPM install the dependencies
+    npm: path={{ project_src }}/server
+
+  - tasks: Create systemd startup script
+    template: src=deploy/templates/node-sample.service.j2 dest=/etc/systemd/system/node-sample.service
+    notify: restart node server
+    sudo: yes
+    sudo_user: root
+
+  handlers:
+    - include: deploy/handlers/
 
 - hosts: web-servers
   remote_user: zuhlke
