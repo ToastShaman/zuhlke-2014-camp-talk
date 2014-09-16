@@ -1,8 +1,7 @@
 --
 - hosts: node-servers
   gather_facts: false
-  sudo: true
-  sudo_user: deploy
+  remote_user: deploy
   serial: 1
 
   vars:
@@ -14,7 +13,7 @@
       default: "master"
 
   tasks:
-  - name: Pull sources from the repository (master branch)
+  - name: Pull sources from the repository
     git: repo={{ git_repo }} dest=/var/projects/ branch={{ git_branch }}
     notify: restart backend
 
