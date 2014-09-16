@@ -24,8 +24,8 @@ http {
   index index.html;
 
   server {
-    listen {{ nginx_http_port }};
-    listen {{ nginx_https_port }} ssl spdy;
+    listen 80;
+    listen 443 ssl spdy;
     ssl_certificate /etc/nginx/ssl/nginx.crt;
     ssl_certificate_key /etc/nginx/ssl/nginx.key;
     ssl_protocols SSLv2 SSLv3 TLSv1;

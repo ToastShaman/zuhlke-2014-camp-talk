@@ -1,6 +1,6 @@
 ---
-- name: Allow incoming connections on port 8080
-  firewalld: port=8080/tcp permanent=true state=enabled
+- name: Allow incoming HTTP connections
+  firewalld: port={{ node_http_port }}/tcp permanent=true state=enabled
   notify: restart firewalld
 
 - name: Install NodeJs
