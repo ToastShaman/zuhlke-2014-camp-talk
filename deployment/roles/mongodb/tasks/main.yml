@@ -2,12 +2,16 @@
 - name: Copy the mongodb repository definition
   copy: src=mongodb.repo dest=/etc/yum.repos.d/mongodb.repo
 
-- name: Install MongoDb
+- name: Install mongodb
   yum: name=mongodb-org state=latest
 
 - name: Configure mongodb 
   copy: src=mongod.conf dest=/etc/mongod.conf
   notify: restart mongodb
+
+# https://jira.mongodb.org/browse/SERVER-14679
+- name: Fix an issue with the systemd startup script for mongodb
+  shell: install -d -m 0755 -o mongod -g mongod /var/run/mongod
 
 - name: Allow incoming mongodb connections
   firewalld: port=27017/tcp permanent=true state=enabled
