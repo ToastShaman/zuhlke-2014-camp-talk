@@ -1,41 +1,53 @@
---
+---
 - hosts: node-servers
-  gather_facts: false
-  remote_user: zuhlke
-  sudo: true
-  sudo_user: deploy
-  serial: 1
+  remote_user: deploy
+  serial: 1 # only one machine at the time
 
   vars:
     git_repo: "https://github.com/ToastShaman/zuhlke-2014-camp-talk.git"
-    project_src: "/home/deploy"
+    project_src: "./backend"
 
   vars_prompt:
-    - name: "git_branch"
-      prompt: "What branch should be deployed? (default=master)"
-      default: "master"
+    - name: "backend_version"
+      prompt: "What version should be deployed? (default=HEAD)"
+      default: "HEAD"
 
   tasks:
   - name: Pull sources from the repository
-    git: repo={{ git_repo }} dest={{ project_src }} branch={{ git_branch }}
-    notify: restart backend
+    git: repo={{ git_repo }} dest={{ project_src }}-{{ backend_version }} version={{ backend_version }}
+
+  - name: Create a symlink to the current version
+    file: src={{ project_src }}-{{ backend_version }}/server dest=backend-current state=link
 
   - name: NPM install the dependencies
-    npm: path={{ project_src }}/server
+    npm: path=/home/deploy/backend-current
 
-  - tasks: Create systemd startup script
-    template: src=deploy/templates/node-sample.service.j2 dest=/etc/systemd/system/node-sample.service
-    notify: restart node server
-    sudo: yes
-    sudo_user: root
+  - name: Make the scripts executable
+    file: path=/home/deploy/backend-current/bin/{{ item }} state=file mode="744"
+    with_items: 
+      - start_with_cluster
+      - start_with_pm2
+
+  - name: Copy the configuration settings
+    template: src=deployment/templates/configuration.json.j2 dest=/home/deploy/backend-current/bin/
+
+  - name: Allow incoming HTTP connections
+    sudo: true
+    firewalld: port=8080/tcp permanent=true state=enabled
+    notify: restart firewalld
+
+  - name: Create systemd startup script
+    sudo: true
+    template: src=deploy/templates/node-backend.service.j2 dest=/usr/lib/systemd/system/node-backend.service
+    notify: restart backend
 
   handlers:
-    - include: deploy/handlers/
+    - include: deploy/handlers/main.yml
 
-- hosts: web-servers
-  remote_user: zuhlke
-  sudo: true
-  serial: 1
+#- hosts: web-servers
+#  remote_user: zuhlke
+#  sudo: true
+#  serial: 1
 
-  - name: Restart nginx
-    service: name=nginx state=restarted
+#  - name: Restart nginx
+#    service: name=nginx state=restarted

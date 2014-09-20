@@ -1,6 +1,6 @@
 var restify = require('restify');
 var server = require('../../src/server');
-var configuration = require('../test-configuration.js')();
+var configuration = require('../test-configuration.json');
 
 var client = restify.createJsonClient({
   url: 'http://localhost:' + configuration.port,

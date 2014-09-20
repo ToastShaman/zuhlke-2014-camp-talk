@@ -1,13 +1,12 @@
 ---
-- name: Allow incoming HTTP connections
-  firewalld: port={{ node_http_port }}/tcp permanent=true state=enabled
-  notify: restart firewalld
-
 - name: Install NodeJs
   yum: name=nodejs.x86_64 state=latest
 
 - name: Install node package manager (NPM)
   yum: name=npm.noarch state=latest
+
+- name: Install PM2
+  npm: name=pm2 global=yes
 
 - name: Install Gulp
   npm: name=gulp global=yes

@@ -1,4 +1,4 @@
-#!/bin/env node
+#!/usr/bin/env node
 
 var program = require('commander');
 program
@@ -10,13 +10,20 @@ if (!program.config) {
   program.help();
 }
 
-var configuration = require('./' + program.config)();
-var npid = require('npid');
+var configuration = require('./' + program.config);
 var bunyan = require('bunyan');
 var cluster = require('cluster');
 var http = require('http');
-var log = configuration.logger;
 var numberOfCPUs = require('os').cpus().length;
+
+var log = new bunyan.createLogger({
+  name: 'nodejs_production_example',
+  streams: [
+    { level: 'info' , stream: process.stdout},
+    { level: 'info', path: configuration.logDirectory + '/cluster.log'}
+  ],
+  serializers: bunyan.stdSerializers
+});
 
 if (numberOfCPUs < 2) {
   numberOfCPUs = 2;
@@ -41,9 +48,6 @@ function stopAllWorkers() {
 if (configuration.cluster && cluster.isMaster) {
 
   log.info('Master %s (#%s) has started', process.pid, process.id);
-
-  var pid = npid.create('backend.pid');
-  pid.removeOnExit();
 
   process.title = 'master';
 

@@ -1,5 +1,2 @@
-# The port the node instances will be listening on for HTTP connections
-node_http_port: 8080
-
 # The password of the deploy user
 deploy_passwd: zuhlke

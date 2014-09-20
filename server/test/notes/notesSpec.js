@@ -1,6 +1,6 @@
 var when = require('when');
 var MongoClient = require('mongodb').MongoClient;
-var configuration = require('../test-configuration.js')();
+var configuration = require('../test-configuration.json');
 
 describe('notes', function() {
 

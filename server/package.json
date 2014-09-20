@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node ./bin/www"
+    "start": "node ./bin/start_with_pm2"
   },
   "dependencies": {
     "bunyan": "^1.0.1",
@@ -11,7 +11,6 @@
     "helmet": "^0.4.1",
     "mongodb": "^1.4.10",
     "node-uuid": "^1.4.1",
-    "npid": "^0.4.0",
     "restify": "^2.8.2",
     "when": "^3.4.5"
   },

@@ -1,0 +1,14 @@
+{
+  "logDirectory": "../logs",
+
+  "database": {
+    "host": "localhost",
+    "port": "27017"
+  },
+
+  "http": {
+    "port": "8080"
+  },
+
+  "version": "development"
+}

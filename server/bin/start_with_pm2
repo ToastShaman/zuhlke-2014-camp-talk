@@ -1,0 +1,4 @@
+#!/usr/bin/env node
+
+var configuration = require('./configuration.json');
+require('../src/server').start(configuration);

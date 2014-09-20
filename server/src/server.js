@@ -3,15 +3,38 @@ var Server = require('mongodb').Server;
 var restify = require('restify');
 var bunyan = require('bunyan');
 var helmet = require('helmet');
+var fs = require('fs');
 
 module.exports.start = function(configuration) {
 
-  var log = configuration.logger;
-  var server = restify.createServer({log : log});
-  var mongoclient = new MongoClient(configuration.database);
+  // Create the directory for the logs if it does not exist
+  if (!fs.existsSync(configuration.logDirectory)) {
+    fs.mkdirSync(configuration.logDirectory);
+  }
 
+  // Initialise the logger
+  var log = new bunyan.createLogger({
+    name: 'nodejs_production_example',
+    streams: [
+      { level: 'info' , stream: process.stdout},
+      { level: 'info', path: configuration.logDirectory + '/server.log'},
+      { level: 'error', path: configuration.logDirectory + '/error.log'}
+    ],
+    serializers: bunyan.stdSerializers
+  });
+
+  var server = restify.createServer({log : log});
+
+  // Connect to the database
+  var mongoServer = new Server(configuration.database.host, configuration.database.port);
+  var mongoclient = new MongoClient(mongoServer);
+
+  // Once the connections has been established, start setting up our rest API
   mongoclient.open(function(err, mongoclient) {
-    if (err) throw err;
+    if (err) {
+      log.error(err);
+      throw err;
+    }
   
     var notes = require('./notes/notes')(mongoclient, log);
 
@@ -29,7 +52,7 @@ module.exports.start = function(configuration) {
       next();
     });
     
-    require('./resources/helloResource')(server);
+    require('./resources/versionResource')(server, configuration);
 
     server.use(function (err, req, res, next){
       log.error(err);
@@ -59,7 +82,7 @@ module.exports.start = function(configuration) {
       }
     });
 
-    server.listen(configuration.port || 8080, function() {
+    server.listen(configuration.http.port || 8080, function() {
       log.info('%s listening at %s', server.name, server.url);
     });
   });

@@ -49,7 +49,7 @@
   action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
 
 - name: Add deploy user to sudoers
-  action: lineinfile dest=/etc/sudoers regexp="deploy ALL" line="deploy ALL=(ALL) ALL" state=present
+  action: lineinfile dest=/etc/sudoers regexp="deploy ALL" line="deploy ALL=(ALL) NOPASSWD: ALL" state=present
 
 - name: Disallow root SSH access
   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
