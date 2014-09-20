@@ -37,6 +37,9 @@
 - name: Create the GPG key for EPEL
   copy: src=RPM-GPG-KEY-EPEL-7 dest=/etc/pki/rpm-gpg
 
+- name: Copying SELinux configuration
+  copy: src=selinux dest=/etc/sysconfig/selinux
+
 - name: Install the 'Development tools' package group
   yum: name="@Development tools" state=present
 
@@ -52,7 +55,7 @@
   action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
 
 - name: Add deploy user to sudoers
-  action: lineinfile dest=/etc/sudoers regexp="deploy ALL" line="deploy ALL=(ALL) NOPASSWD: ALL" state=present
+  lineinfile: dest=/etc/sudoers regexp="deploy ALL" line="deploy ALL=(ALL) ALL" state=present
 
 - name: Disallow root SSH access
   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
@@ -61,6 +64,3 @@
 - name: Disallow password authentication
   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PasswordAuthentication" line="PasswordAuthentication no" state=present
   notify: restart sshd
-
-- name: Copying SELinux configuration
-  copy: src=selinux dest=/etc/sysconfig/selinux
