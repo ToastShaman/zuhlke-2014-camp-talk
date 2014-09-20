@@ -6,7 +6,7 @@
   yum: name=npm.noarch state=latest
 
 - name: Install PM2
-  npm: name=pm2 global=yes
+  shell: npm install pm2 -g --unsafe-perm
 
 - name: Install Gulp
   npm: name=gulp global=yes
