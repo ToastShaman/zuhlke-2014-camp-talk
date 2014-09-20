@@ -20,9 +20,6 @@
 - name: Install nano
   yum: name=nano state=present
 
-- name: Install policy utilities
-  yum: policycoreutils-python state=present
-
 - name: Install yum-cron for automatic security updates
   yum: name=yum-cron state=present
   notify: restart yum-cron
