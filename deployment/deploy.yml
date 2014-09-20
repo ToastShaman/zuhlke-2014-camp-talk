@@ -45,6 +45,9 @@
   - name: Save the pm2 process list
     shell: pm2 save
 
+  - name: Generate pm2 startup scripts
+    shell: pm2 startup -u deploy systemd
+
   #handlers:
   #  - include: deploy/handlers/main.yml
 

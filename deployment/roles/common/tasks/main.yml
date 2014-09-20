@@ -49,10 +49,10 @@
     - public_keys/ked.pub
 
 - name: Remove sudo group rights
-  action: lineinfile dest=/etc/sudoers regexp="^%sudo" state=absent
+  lineinfile: dest=/etc/sudoers regexp="^%sudo" state=absent
 
 - name: Add deploy user to sudoers
-  lineinfile: dest=/etc/sudoers regexp="deploy ALL" line="deploy ALL=(ALL) ALL" state=present
+  lineinfile: "dest=/etc/sudoers state=present regexp='deploy ALL' line='deploy ALL=(ALL) NOPASSWD: ALL'"
 
 - name: Disallow root SSH access
   action: lineinfile dest=/etc/ssh/sshd_config regexp="^PermitRootLogin" line="PermitRootLogin no" state=present
