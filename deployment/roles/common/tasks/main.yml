@@ -37,6 +37,9 @@
 - name: Copying SELinux configuration
   copy: src=selinux dest=/etc/sysconfig/selinux
 
+- name: Turning SELinux OFF
+  shell: setenforce 0
+
 - name: Install the 'Development tools' package group
   yum: name="@Development tools" state=present
 

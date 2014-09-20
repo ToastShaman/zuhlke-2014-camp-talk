@@ -36,20 +36,18 @@
     firewalld: port=8080/tcp permanent=true state=enabled
     notify: restart firewalld
 
-  - name: Stop the backend
-    shell: pm2 stop all
-
   - name: Start the backend
-    shell: pm2 start /home/deploy/backend-current/bin/start_with_pm2
+    shell: pm2 start -f /home/deploy/backend-current/bin/start_with_pm2
 
   - name: Save the pm2 process list
     shell: pm2 save
 
   - name: Generate pm2 startup scripts
+    sudo: true
     shell: pm2 startup -u deploy systemd
 
-  #handlers:
-  #  - include: deploy/handlers/main.yml
+  handlers:
+    - include: deploy/handlers/main.yml
 
 #- hosts: web-servers
 #  remote_user: zuhlke
