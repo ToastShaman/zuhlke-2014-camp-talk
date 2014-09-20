@@ -28,3 +28,6 @@
 
 - name: Install bunyan dtrace provider
   npm: name=dtrace-provider global=yes
+
+- name: Generate pm2 startup scripts
+  shell: pm2 startup -u deploy systemd

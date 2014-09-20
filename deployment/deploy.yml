@@ -29,17 +29,16 @@
       - start_with_pm2
 
   - name: Copy the configuration settings
-    template: src=deployment/templates/configuration.json.j2 dest=/home/deploy/backend-current/bin/
+    template: src=deploy/templates/configuration.json.j2 dest=/home/deploy/backend-current/bin/configuration.json
 
   - name: Allow incoming HTTP connections
     sudo: true
     firewalld: port=8080/tcp permanent=true state=enabled
     notify: restart firewalld
 
-  - name: Create systemd startup script
+  - name: Start/Restart the backend
     sudo: true
-    template: src=deploy/templates/node-backend.service.j2 dest=/usr/lib/systemd/system/node-backend.service
-    notify: restart backend
+    service: name=pm2 state=restarted enabled=yes
 
   handlers:
     - include: deploy/handlers/main.yml

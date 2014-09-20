@@ -5,6 +5,9 @@
 - name: Install mongodb tools
   yum: name=mongo-10gen state=latest
 
+- name: Create mongodb PID file
+  shell: install -d -m 0755 -o mongod -g mongod /var/run/mongodb/
+
 - name: Configure mongodb 
   copy: src=mongod.conf dest=/etc/mongod.conf
   notify: restart mongodb

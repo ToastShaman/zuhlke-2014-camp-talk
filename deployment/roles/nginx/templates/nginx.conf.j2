@@ -35,7 +35,7 @@ http {
     }
 
     location /api {
-      proxy_pass http://backend;
+      proxy_pass http://backend/;
     }
   }
 
@@ -52,7 +52,7 @@ http {
     }
 
     location /api {
-      proxy_pass http://backend;
+      proxy_pass http://backend/;
     }
   }
 
