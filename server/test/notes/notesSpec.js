@@ -8,7 +8,7 @@ describe('notes', function() {
   var db;
   
   before(function(done) {
-    MongoClient.connect(configuration.database.url, function(err, database) {
+    MongoClient.connect(configuration.database, function(err, database) {
       if (err) done(err);
       notes = require('../../src/notes/notes')(database);
       db = database;

@@ -1,5 +1,4 @@
 var MongoClient = require('mongodb').MongoClient;
-var Server = require('mongodb').Server;
 var restify = require('restify');
 var bunyan = require('bunyan');
 var helmet = require('helmet');
@@ -25,18 +24,14 @@ module.exports.start = function(configuration) {
 
   var server = restify.createServer({log : log});
 
-  // Connect to the database
-  var mongoServer = new Server(configuration.database.host, configuration.database.port);
-  var mongoclient = new MongoClient(mongoServer);
-
   // Once the connections has been established, start setting up our rest API
-  mongoclient.open(function(err, mongoclient) {
+  MongoClient.connect(configuration.database, function(err, database) {
     if (err) {
       log.error(err);
       throw err;
     }
   
-    var notes = require('./notes/notes')(mongoclient, log);
+    var notes = require('./notes/notes')(database, log);
 
     server.use(restify.requestLogger());
     server.use(restify.queryParser());
@@ -53,6 +48,7 @@ module.exports.start = function(configuration) {
     });
     
     require('./resources/versionResource')(server, configuration);
+    require('./resources/notesResource')(server, notes);
 
     server.use(function (err, req, res, next){
       log.error(err);
