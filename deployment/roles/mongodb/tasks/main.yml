@@ -2,7 +2,7 @@
 - name: Copy the mongodb repository definition
   copy: src=mongodb.repo dest=/etc/yum.repos.d/mongodb.repo
 
-- name: Install mongodb tools
+- name: Install mongodb
   yum: name=mongo-10gen state=latest
 
 - name: Create mongodb PID file

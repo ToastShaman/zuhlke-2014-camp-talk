@@ -36,23 +36,36 @@
     firewalld: port=8080/tcp permanent=true state=enabled
     notify: restart firewalld
 
+  - stat: path=/etc/systemd/system/pm2.service
+    register: pm2Service
+
   - name: Start the backend
     shell: pm2 start -f /home/deploy/backend-current/bin/start_with_pm2
+    when: not pm2Service.stat.exists
 
   - name: Save the pm2 process list
     shell: pm2 save
+    when: not pm2Service.stat.exists
 
   - name: Generate pm2 startup scripts
     sudo: true
     shell: pm2 startup -u deploy systemd
+    when: not pm2Service.stat.exists
+
+  - name: Restart the backend
+    shell: pm2 reload all
+    when: pm2Service.stat.exists
 
   handlers:
     - include: deploy/handlers/main.yml
 
-#- hosts: web-servers
-#  remote_user: zuhlke
-#  sudo: true
-#  serial: 1
+- hosts: web-servers
+  remote_user: zuhlke
+  sudo: true
+  serial: 1 # only one machine at the time
 
-#  - name: Restart nginx
-#    service: name=nginx state=restarted
+  tasks:
+  - include: roles/nginx/tasks/main.yml tags=configuration
+
+  handlers:
+  - include: roles/nginx/handlers/main.yml

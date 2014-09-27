@@ -1,10 +1,9 @@
 {
     "logDirectory": "/home/deploy/logs",
 
-    "database": {
-        "host": "localhost",
-        "port": "27017"
-    },
+    {% for host in groups['db-servers'] %}
+    "database": "mongodb://{{ hostvars[host]['ansible_default_ipv4']['address'] }}:27017/notes",
+    {% endfor %}
 
     "http": {
         "port": "8080"
