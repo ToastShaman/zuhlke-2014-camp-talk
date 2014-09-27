@@ -1,4 +1,5 @@
 ---
+- include: logservers.yml
 - include: nodeservers.yml
 - include: dbservers.yml
 - include: webservers.yml

@@ -1,0 +1,2 @@
+kibana_url: "https://download.elasticsearch.org/kibana/kibana/kibana-{{ kibana_version }}.tar.gz"
+kibana_version: "3.1.0"

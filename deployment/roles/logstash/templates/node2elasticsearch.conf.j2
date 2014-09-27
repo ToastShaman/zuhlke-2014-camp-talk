@@ -1,0 +1,13 @@
+input {
+    file {
+        type => "backend"
+        path => [ "/home/deploy/logs/*.log" ]
+        codec => "json"
+    }   
+}
+
+output {
+    elasticsearch {
+        host => "{{ hostvars[groups['log-servers'][0]]['ansible_default_ipv4']['address'] }}"
+    }
+}

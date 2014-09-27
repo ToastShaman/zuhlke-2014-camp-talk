@@ -1,0 +1,14 @@
+---
+- name: Get Kibana Archive
+  get_url: url={{ kibana_url }} dest=/tmp/kibana.tar.gz
+  tags: kib
+
+- name: Unarchive Kibana
+  unarchive: src=/tmp/kibana.tar.gz dest=/usr/share/nginx/html/ copy=no
+
+- name: Create a symlink to the current version
+  file: src=/usr/share/nginx/html/kibana-{{ kibana_version }} dest=/usr/share/nginx/html/kibana state=link
+
+- name: Copy Kibana configuration
+  template: src=config.js.j2 dest=/usr/share/nginx/html/kibana/config.js owner=root group=root mode=0644
+  tags: configuration

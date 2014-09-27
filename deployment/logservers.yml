@@ -1,0 +1,9 @@
+---
+- name: Provision log servers
+  hosts: log-servers
+  remote_user: zuhlke
+  sudo: true
+
+  roles:
+    - common
+    - elasticsearch
