@@ -6,6 +6,6 @@ request = function()
     wrk.body = '{"title": "Hello World' .. counter .. '"}'
     wrk.headers["Content-Type"] = "application/json"
     counter = counter + 1
-    return wrk.format(nill, "/notes")
+    return wrk.format(nill, "/api/notes")
 
 end
